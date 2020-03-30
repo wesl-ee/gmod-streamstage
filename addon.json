@@ -1,0 +1,6 @@
+{
+	"title"	:	"Music Stream Visualizer",
+	"type"	:	"ServerContent",
+	"tags"	:	[ ],
+	"ignore"	:	[ "icon.jpg" ]
+}
