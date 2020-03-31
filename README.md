@@ -7,9 +7,9 @@ also playing it. It looks something like the below:
 
 ![Icon](icon.jpg)
 
-It's primary intention is to be used to create a virtual-club environment
-(with multiple visualizers around the room) for use in on-line DJ sets but
-works fine as a general internet radio / visualizer as well
+Its primary intention is to be used in the creation of a virtual-club
+environment (with multiple visualizers around the room) for use in on-line DJ
+sets but works fine as a general internet radio / visualizer as well.
 
 Features
 --------
@@ -17,28 +17,29 @@ Features
 A number of features are touted here which set this apart visualizer from
 other options in the Steam Workshop:
 
-- Simplicity
-- 3D audio
+- Visual simplicity and smooth playback
+- 3D audio (where supported) for positional audio
 - Global audio/video synchronization between multiple visualizers
-- Reliable interface for admin control
+- Reliable, chat-based interface for admin control
 
 Commands
 --------
 
-As an admin you may issue the following commands through (global) chat:
+As an admin you may issue the following commands through (global) chat.
+Parameters listed in *[Brackets]* are optional.
 
 ### Loading a Stream
 
-Command: */loadstream [URL]*
+Command: `/loadstream *URL*`
 
-Loads and plays [URL] across all visualizers; defaults to *stream_url* cvar if
-not specified
+Loads and plays [URL] across all visualizers; defaults to the `stream_url`
+cvar if not specified within the command itself.
 
 ### Stopping a Stream
 
-Command: */stopstream*
+Command: `/stopstream`
 
-Stops audio / video from all visualizers
+Stops audio / video from all visualizers.
 
 Contributing / Source Code
 --------------------------
