@@ -2,5 +2,8 @@
 	"title"	:	"Music Stream Visualizer",
 	"type"	:	"ServerContent",
 	"tags"	:	[ ],
-	"ignore"	:	[ "icon.jpg" ]
+	"ignore"	:	[
+		"icon.jpg",
+		".git/*"
+	]
 }

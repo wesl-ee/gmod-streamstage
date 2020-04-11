@@ -121,8 +121,19 @@ function ENT:Draw()
 	cam.End3D2D()
 end
 
+function ENT:SetupDataTables()
+	-- Network variables
+	self:NetworkVar("Bool", 0, "NowPlaying")
+	self:NetworkVar("String", 0, "URL")
+end
+
 function ENT:Initialize()
 	self:SetVar("visIndex", table.insert(CL_VISUALIZERS, self))
+
+	-- Reload the stream for connecting clients
+	if self:GetNowPlaying() then
+		ReloadStream(self:GetURL(), 0.85)
+	end
 end
 
 function ReloadStream(streamurl, vol)
