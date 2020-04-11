@@ -153,6 +153,14 @@ function ReloadStream(streamurl, vol)
 			v:SetVar("SoundChannel", media)
 			media:Pause()
 		end )
+
+		-- Update all radios if / when moved
+		hook.Add("Think", v, function(this)
+			local media = this:GetVar("SoundChannel")
+			if IsValid(media) then
+				media:SetPos(this:GetPos())
+			end
+		end )
 	end
 
 end
@@ -163,21 +171,9 @@ net.Receive("start-stream", function(len, pl)
 	local vol = net.ReadDouble()
 	ReloadStream(streamurl, vol)
 
-	-- Update all radios if / when moved
-	hook.Add("Think", "UpdatePos", function()
-		for k, v in pairs(CL_VISUALIZERS) do
-			local media = v:GetVar("SoundChannel")
-			if IsValid(media) then
-				media:SetPos(v:GetPos())
-			end
-		end
-	end )
 end )
 
 net.Receive("stop-stream", function(len, pl)
-	-- Remove the hook established in the start-stream
-	hook.Remove("UpdatePos")
-
 	-- Stop all streams
 	for k, v in pairs(CL_VISUALIZERS) do
 		if v:GetVar("SoundChannel") then
@@ -186,6 +182,9 @@ net.Receive("stop-stream", function(len, pl)
 			-- Just to remind us! Stop() invalidates the SoundChannel
 			v:SetVar("SoundChannel", nil)
 		end
+
+		-- Remove the hook established in the start-stream
+		hook.Remove("Think", v)
 	end
 end )
 
