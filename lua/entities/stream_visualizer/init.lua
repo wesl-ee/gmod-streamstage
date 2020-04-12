@@ -13,6 +13,11 @@ function ENT:Initialize()
 		phys:Wake()
 	end
 
+	-- Respect SpawnFlags
+	if self:HasSpawnFlags(SF_PHYSPROP_MOTIONDISABLED) then
+		phys:EnableMotion(false)
+	end
+
 	self:SetUseType(SIMPLE_USE)
 
 	hook.Add("PlayerSay", "AdminStreamCmds", function(p, txt)
