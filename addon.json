@@ -1,9 +1,10 @@
 {
-	"title"	:	"Music Stream Visualizer",
+	"title"	:	"DJ Stream Kit + Visualizer",
 	"type"	:	"ServerContent",
 	"tags"	:	[ ],
 	"ignore"	:	[
 		"icon.jpg",
+		"README.md",
 		".git/*"
 	]
 }

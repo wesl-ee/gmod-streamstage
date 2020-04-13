@@ -1,0 +1,7 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models/props/stream_controller_gray"
+	"$surfaceprop" "Metal"
+	"$surfaceprop2" "Metal"
+	"%keywords" "stream"
+}
