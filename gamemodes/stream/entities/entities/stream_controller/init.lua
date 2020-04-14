@@ -20,6 +20,10 @@ net.Receive("StartMusicStream", function(a, p)
 	net.Send(p)
 end )
 
+function ENT:OnRemove()
+	GAMEMODE:BroadcastStop()
+end
+
 function ENT:PlayAll(url)
 	for k, v in pairs(AllSpeakers()) do
 		v:StartStream(url)
