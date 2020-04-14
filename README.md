@@ -1,9 +1,9 @@
-Music Stream Visualizer for Garry's Mod
+Virtual DJ Gamemode for Garry's Mod
 =======================================
 
-This is an add-on for Garry's Mod which pipes in music from an external
-source (e.g. Internet Radio) and visualizes the audio stream while
-also playing it. It looks something like the below:
+This is an add-on for Garry's Mod which introduces a new gamemode and a
+few new entities for it as well. This game mode is designed for virtual
+DJ sets and things like that.
 
 ![Icon](icon.jpg)
 
@@ -11,41 +11,31 @@ Its primary intention is to be used in the creation of a virtual-club
 environment (with multiple visualizers around the room) for use in on-line DJ
 sets but works fine as a general internet radio / visualizer as well.
 
+Primarily, this gamemode allows a DJ to pipe in audio from an Internet
+radio. If you are controlling the music on the radio then congratulations:
+you're a DJ! Examples of working DJ setups will be listed in `docs/`.
+
+This gamemode also supports the use of an (optional) HTML5 <video>
+stream; please be patient as we work out all the bugs!
+
+Starting the Party
+------------------
+
+The main entity is the `stream_controller` DJ controller. Simply walk up
+to it and press "E".
+
 Features
 --------
 
-A number of features are touted here which set this apart visualizer from
-other options in the Steam Workshop:
-
-- Visual simplicity and smooth playback
-- 3D audio (where supported) for positional audio
-- Global audio/video synchronization between multiple visualizers
-- Reliable, chat-based interface for admin control
-
-Commands
---------
-
-As an admin you may issue the following commands through (global) chat.
-Parameters listed in *[Brackets]* are optional.
-
-### Loading a Stream
-
-Command: `/loadstream *URL*`
-
-Loads and plays [URL] across all visualizers; defaults to the `stream_url`
-cvar if not specified within the command itself.
-
-### Stopping a Stream
-
-Command: `/stopstream`
-
-Stops audio / video from all visualizers.
+- Numark Mixtrack Pro DJ controller (the one I use IRL!)
+- Audio visualizers for the music stream
+- HTML5 video playback kinda supported (working with .ogv broadcasts)
 
 Contributing / Source Code
 --------------------------
 
 All development of this add-on is done on [the Github page for this
-project](https://github.com/yumi-xx/gmod-stream-visualizer)
+project](https://github.com/yumi-xx/gmod-streamstage)
 so all issues / feature requests should be submitted there by creating a new
 issue. Pull requests are respected and are actually very helpful in developing
 / maintaining this project.

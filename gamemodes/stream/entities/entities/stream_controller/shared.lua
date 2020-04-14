@@ -1,7 +1,7 @@
 ENT.Type = "anim"
 ENT.Base = "base_gmodentity"
 ENT.PrintName = "Stream Controller (Mixtrack Pro)"
-ENT.Category = "Stream Controller"
+ENT.Category = "Stream Kit"
 ENT.Spawnable = true
 
 function MasterController()

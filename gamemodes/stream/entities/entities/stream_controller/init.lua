@@ -5,17 +5,19 @@ AddCSLuaFile("shared.lua")
 util.AddNetworkString("ShowControllerVGUI")
 util.AddNetworkString("StartMusicStream")
 
-net.Receive("StartMusicStream", function(a)
+net.Receive("StartMusicStream", function(a, p)
 	url = net.ReadString()
-	master = MasterController()
-	if url != "" then
-		print("Start the music!")
-		print(url)
-		master:PlayAll(url)
-	else
-		print("Stop the music!")
-		master:StopAll()
-	end
+--	master = MasterController()
+--	if url != "" then
+--		print("Start the music!")
+--		print(url)
+--		master:PlayAll(url)
+--	else
+--		print("Stop the music!")
+--		master:StopAll()
+--	end
+	net.Start("streamstage-start")
+	net.Send(p)
 end )
 
 function ENT:PlayAll(url)

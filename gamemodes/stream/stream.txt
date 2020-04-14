@@ -1,0 +1,7 @@
+"stream"
+{
+	"base"	"base"
+	"title" "Stream Stage"
+	"maps"	"^stream_"
+	"menusystem"	"1"
+}
