@@ -56,7 +56,7 @@ function ENT:ShowUsePanel()
 
 	if GAMEMODE.Volume then
 		vol:SetText(GAMEMODE.Volume)
-	end
+	else vol:SetText(100) end
 
 	local attenlabel = vgui.Create("DLabel", frame)
 	attenlabel:SetPos(90, 130)
@@ -67,7 +67,7 @@ function ENT:ShowUsePanel()
 	atten:SetSize(40, 20)
 	if GAMEMODE.Attenuation then
 		atten:SetText(GAMEMODE.Attenuation)
-	end
+	else atten:SetText(100) end
 
 	local playbutton = vgui.Create("DButton", frame)
 	playbutton:SetText("Play")
