@@ -38,16 +38,5 @@ function ENT:Use(a)
 	net.Start("ShowControllerVGUI")
 	net.WriteEntity(self)
 
-	if !master then
-		net.WriteUInt(self.NETCODE.VGUI_NO_OUTPUTS,
-			self.NETINTLEN)
-	elseif !master:GetNowPlaying() then
-		net.WriteUInt(self.NETCODE.VGUI_NOT_PLAYING,
-			self.NETINTLEN)
-	else
-		net.WriteUInt(self.NETCODE.VGUI_NOW_PLAYING,
-			self.NETINTLEN)
-	end
-
 	net.Send(a)
 end

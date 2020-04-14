@@ -14,6 +14,8 @@ hook.Add("PlayerInitialSpawn", "FullLoadSetup", function(ply)
 end )
 
 hook.Add("PlayerFullLoad", "FullLoad", function(p)
+	-- Which entity is playing the sound?
+	-- Please send ENT ID of the "controlling" controller
 end )
 
 function GM:BroadcastStart()
@@ -38,6 +40,7 @@ function GM:BroadcastParameters()
 	for _, v in pairs(player.GetAll()) do
 		net.Start("streamstage-parameters")
 		net.WriteUInt(GAMEMODE.Attenuation, GAMEMODE.NetUIntSize)
+		net.WriteUInt(GAMEMODE.Emitter:EntIndex(), GAMEMODE.NetUIntSize)
 		net.WriteString(GAMEMODE.SoundURL)
 		net.WriteString(GAMEMODE.VideoURL)
 		net.WriteInt(GAMEMODE.Volume, GAMEMODE.NetUIntSize)

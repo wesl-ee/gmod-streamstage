@@ -1,30 +1,44 @@
 include( "shared.lua" )
 
 function ConstantAudio(station)
-	if station then return end
-	print("Probably dead!")
+	if !station then
+		print("Probably dead!")
+		return
+	end
+
+	local dist = LocalPlayer():GetPos():DistToSqr(
+		GAMEMODE.Emitter:GetPos())
+
+	local attenvol = GAMEMODE:AttenuatedVolume(dist)
+	station:SetVolume(attenvol/100)
+end
+
+function GM:StationLoaded(station)
+	if !IsValid(station) then
+		LocalPlayer():ChatPrint("Invalid Stream URL!")
+	end
+
+	GAMEMODE.AudioChannel = station
+	station:SetVolume(GAMEMODE.Volume/100)
+
+	station:SetPos(GAMEMODE.Emitter:GetPos())
+
+	local slowdown = 0
+	hook.Add("Tick", "CheckMedia", function()
+		slowdown = slowdown + 1
+		if slowdown <= 20 then return end
+
+		ConstantAudio(station)
+		slowdown = 0
+	end )
 end
 
 function GM:StartShow()
 	GAMEMODE.NowPlaying = true
 
 	if GAMEMODE.SoundURL then
-		sound.PlayURL(GAMEMODE.SoundURL, "", function(station)
-			if IsValid(station) then
-				station:SetVolume(GAMEMODE.Volume/100)
-				station:SetPos(LocalPlayer():GetPos())
-				local slowdown = 0
-				hook.Add("Tick", "CheckMedia", function()
-					slowdown = slowdown + 1
-					if slowdown <= 100 then return end
-
-					ConstantAudio(station)
-					slowdown = 0
-				end)
-			else
-				LocalPlayer():ChatPrint("Invalid Stream URL!")
-			end
-			GAMEMODE.AudioChannel = station
+		sound.PlayURL(GAMEMODE.SoundURL, "", function(s)
+			GAMEMODE:StationLoaded(s)
 		end )
 	end
 	if GAMEMODE.VideoURL then
@@ -49,6 +63,7 @@ function GM:StopShow()
 
 	if GAMEMODE.AudioChannel then
 		local a = GAMEMODE.AudioChannel
+		hook.Remove("Tick", "CheckMedia")
 		a:Stop()
 
 		GAMEMODE.AudioChannel = nil

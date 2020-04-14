@@ -18,11 +18,39 @@ function GM:Initialize()
 		net.Receive("streamstage-stop", GAMEMODE.StopShow)
 	end
 
-	self.NetUIntSize = 8
+	self.NetUIntSize = 32
 end
+
+function GM:AttenuatedVolume(sqdist)
+	-- Distance parameters
+	local MinDistance = 25
+	local MaxDistance = (GAMEMODE.Attenuation + 1) * MinDistance
+
+	-- Maximum relative volume w.r.t. gamemode parameters
+	local relvol = GAMEMODE.Volume
+
+	-- Linear region
+	local maxsqr = MaxDistance ^ 2
+	local minsqr = MinDistance ^ 2
+
+	-- No attenuation outside linear region
+	if sqdist < minsqr then return relvol end
+	if sqdist > maxsqr then return 0 end
+
+	-- Calculate the linear attenuation curve
+	local linearatten = sqdist * 1 / (minsqr - maxsqr) + maxsqr / (maxsqr - minsqr)
+
+	-- Adjust the curve to behave parabolically
+	local parabolicatten = linearatten * (maxsqr - sqdist) / (maxsqr + sqdist)
+
+	-- Scale to the parameterized volume
+	return parabolicatten * relvol
+end
+
 
 net.Receive("streamstage-parameters", function()
 	GAMEMODE.Attenuation = net.ReadUInt(GAMEMODE.NetUIntSize)
+	GAMEMODE.Emitter = Entity(net.ReadUInt(GAMEMODE.NetUIntSize))
 	GAMEMODE.SoundURL = net.ReadString()
 	GAMEMODE.VideoURL = net.ReadString()
 	GAMEMODE.Volume = net.ReadInt(GAMEMODE.NetUIntSize)

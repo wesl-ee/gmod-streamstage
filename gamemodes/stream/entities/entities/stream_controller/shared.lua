@@ -8,19 +8,7 @@ function MasterController()
 	return ents.FindByClass("stream_controller")[1]
 end
 
-function AllSpeakers()
-	return ents.FindByClass("stream_visualizer")
-end
-
 function ENT:Initialize()
-	-- Constants for networking
-	self.NETINTLEN = 8
-	self.NETCODE = {
-		VGUI_NO_OUTPUTS = 1,
-		VGUI_NOT_PLAYING = 2,
-		VGUI_NOW_PLAYING = 3
-	}
-
 	if SERVER then
 		self:SetModel("models/props/stream_controller.mdl")
 		self:PhysicsInit(SOLID_VPHYSICS)
