@@ -34,14 +34,20 @@ function GM:StationLoaded(station)
 end
 
 function GM:StartShow()
+	-- Do not start if we're already started
+	if GAMEMODE.NowPlaying then return end
+
 	GAMEMODE.NowPlaying = true
 
+	-- Process audio for client
 	if GAMEMODE.SoundURL then
 		sound.PlayURL(GAMEMODE.SoundURL, "", function(s)
 			GAMEMODE:StationLoaded(s)
 		end )
 	end
-	if GAMEMODE.VideoURL then
+
+	-- Show HTML derma panel
+	if GAMEMODE.VideoURL ~= "" then
 		GAMEMODE.VideoPanel = vgui.Create("DFrame")
 		local v = GAMEMODE.VideoPanel
 		v:SetPos(ScrW() - 426 - 10, 10)
@@ -61,6 +67,7 @@ end
 function GM:StopShow()
 	GAMEMODE.NowPlaying = false
 
+	-- Stop audio
 	if GAMEMODE.AudioChannel then
 		local a = GAMEMODE.AudioChannel
 		hook.Remove("Tick", "CheckMedia")
@@ -69,6 +76,7 @@ function GM:StopShow()
 		GAMEMODE.AudioChannel = nil
 	end
 
+	-- Stop video
 	if GAMEMODE.VideoPanel then
 		local v = GAMEMODE.VideoPanel
 		v:Close()
