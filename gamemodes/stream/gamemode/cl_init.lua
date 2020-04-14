@@ -1,4 +1,5 @@
-include( "shared.lua" )
+include("shared.lua")
+include("cl_thirdperson.lua")
 
 function GM:AudioTick(station)
 	if station:GetState() == GMOD_CHANNEL_BUFFERING then
