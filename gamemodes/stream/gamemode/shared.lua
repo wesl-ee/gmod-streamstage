@@ -19,6 +19,12 @@ function GM:Initialize()
 	end
 
 	self.NetUIntSize = 32
+	self.FFTType = FFT_256
+	self.FFTAveragingWindow = 3
+	self.SmoothFFT = { }
+	for i = 1, 128 do
+		self.SmoothFFT[i] = 0
+	end
 end
 
 function GM:AttenuatedVolume(sqdist)

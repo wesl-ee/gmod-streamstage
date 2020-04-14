@@ -1,14 +1,26 @@
 include( "shared.lua" )
 
-function ConstantAudio(station)
-	if !station then
-		print("Probably dead!")
+function GM:AudioTick(station)
+	if station:GetState() == GMOD_CHANNEL_BUFFERING then
+		print("Bufffffffffffferrrrrrrring...")
 		return
 	end
 
+	-- Compute the FFT
+	local window = self.FFTAveragingWindow || 3
+	self.FFT = { }
+	station:FFT(self.FFT, self.FFTType)
+	for i, sample in pairs(self.FFT) do
+		local smoothsample = self.SmoothFFT[i]
+
+		-- Rolling average
+		self.SmoothFFT[i] = sample/window +
+			(window-1)*smoothsample/(window)
+	end
+
+	-- Sound Attenuation
 	local dist = LocalPlayer():GetPos():DistToSqr(
 		GAMEMODE.Emitter:GetPos())
-
 	local attenvol = GAMEMODE:AttenuatedVolume(dist)
 	station:SetVolume(attenvol/100)
 end
@@ -24,12 +36,8 @@ function GM:StationLoaded(station)
 	station:SetPos(GAMEMODE.Emitter:GetPos())
 
 	local slowdown = 0
-	hook.Add("Tick", "CheckMedia", function()
-		slowdown = slowdown + 1
-		if slowdown <= 20 then return end
-
-		ConstantAudio(station)
-		slowdown = 0
+	hook.Add("Tick", "AudioTick", function()
+		GAMEMODE:AudioTick(station)
 	end )
 end
 
@@ -70,7 +78,7 @@ function GM:StopShow()
 	-- Stop audio
 	if GAMEMODE.AudioChannel then
 		local a = GAMEMODE.AudioChannel
-		hook.Remove("Tick", "CheckMedia")
+		hook.Remove("AudioTick", "CheckMedia")
 		a:Stop()
 
 		GAMEMODE.AudioChannel = nil
