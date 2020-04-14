@@ -10,12 +10,12 @@ function GM:Initialize()
 		util.AddNetworkString("streamstage-stop")
 		util.AddNetworkString("streamstage-parameters")
 
-		net.Receive("streamstage-start", function() GAMEMODE:BroadcastStart() end)
-		net.Receive("streamstage-stop", function() GAMEMODE:BroadcastStop() end)
+		net.Receive("streamstage-start", function() GAMEMODE.BroadcastStart() end)
+		net.Receive("streamstage-stop", function() GAMEMODE.BroadcastStop() end)
 	else
 		-- GM-specific client functions
-		net.Receive("streamstage-start", GAMEMODE.StartShow)
-		net.Receive("streamstage-stop", GAMEMODE.StopShow)
+		net.Receive("streamstage-start", function() GAMEMODE.StartShow() end)
+		net.Receive("streamstage-stop", function() GAMEMODE.StopShow() end)
 	end
 
 	self.NetUIntSize = 32
