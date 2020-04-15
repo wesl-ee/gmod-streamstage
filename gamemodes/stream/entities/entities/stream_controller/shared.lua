@@ -1,5 +1,5 @@
 ENT.Type = "anim"
-ENT.Base = "base_gmodentity"
+ENT.Base = "base_entity"
 ENT.PrintName = "Stream Controller (Mixtrack Pro)"
 ENT.Category = "Stream Kit"
 ENT.Spawnable = true

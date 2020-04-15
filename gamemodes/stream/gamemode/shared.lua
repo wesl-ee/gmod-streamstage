@@ -3,7 +3,13 @@ GM.Author = "Pretty-boy Yumi"
 GM.Email = "yumi@prettyboytellem.com"
 GM.Website = "https://prettyboytellem.com/"
 
-DeriveGamemode("sandbox")
+function GM:PlayerSpawn(pl)
+	pl:SetMaxSpeed(self.MaxSpeed)
+	pl:SetWalkSpeed(self.WalkSpeed)
+	pl:SetRunSpeed(self.RunSpeed)
+	pl:SetJumpPower(self.JumpPower)
+end
+
 function GM:Initialize()
 	if SERVER then
 		util.AddNetworkString("streamstage-start")
@@ -16,7 +22,16 @@ function GM:Initialize()
 		-- GM-specific client functions
 		net.Receive("streamstage-start", function() GAMEMODE.StartShow() end)
 		net.Receive("streamstage-stop", function() GAMEMODE.StopShow() end)
+
+		self.HideHUD = { ["CHudHealth"] = true,
+			["CHudCrosshair"] = true }
 	end
+
+	-- Movement speed parameters
+	self.MaxSpeed = 300
+	self.WalkSpeed = 100
+	self.RunSpeed = 175
+	self.JumpPower = 260
 
 	self.NetUIntSize = 32
 	self.FFTType = FFT_256

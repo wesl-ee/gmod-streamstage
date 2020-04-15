@@ -1,6 +1,10 @@
 include("shared.lua")
 include("cl_thirdperson.lua")
 
+hook.Add("HUDShouldDraw", "HideHUD", function(name)
+	if GAMEMODE.HideHUD[name] then return false end
+end )
+
 function GM:AudioTick(station)
 	if station:GetState() == GMOD_CHANNEL_BUFFERING then
 		print("Bufffffffffffferrrrrrrring...")
