@@ -39,6 +39,39 @@ end
 
 hook.Add("CalcView", "ThirdPerson", ThirdPerson)
 
-hook.Add("ShouldDrawLocalPlayer", "ShouldDrawLocalPlayer", function(ply)
+hook.Add("ShouldDrawLocalPlayer", "ShouldDrawLocalPlayer", function(p)
 	return true
 end)
+
+function DrawName(p)
+	if !p:Alive() then return end
+
+	-- Don't even bother with far-away friends
+	if p ~= LocalPlayer() then
+		local dist = LocalPlayer():GetPos():Distance(p:GetPos())
+
+		-- Too far! Gotta squint
+		if dist > 1000 then return end
+	end
+
+	local above = Vector(0, 0, 81)
+	local ang = LocalPlayer():EyeAngles()
+	local pos = p:GetPos() + above + ang:Up()
+
+	ang:RotateAroundAxis(ang:Forward(), 90)
+	ang:RotateAroundAxis(ang:Right(), 90)
+
+	cam.Start3D2D(pos, Angle(0, ang.y, 90), 0.15)
+		draw.DrawText(p:GetName(), "CloseCaption_Normal", _, _, _, TEXT_ALIGN_CENTER)
+	cam.End3D2D()
+end
+
+-- Draw everyone's name...
+hook.Add("PostPlayerDraw", "DrawName", function(p)
+	if p ~= LocalPlayer() then DrawName(p) end
+end )
+
+-- ...but your name is special ^.^
+hook.Add("PreDrawViewModel", "DrawMyName", function()
+	DrawName(LocalPlayer())
+end )
