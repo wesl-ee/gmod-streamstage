@@ -16,6 +16,8 @@ end )
 hook.Add("PlayerFullLoad", "FullLoad", function(p)
 	-- Which entity is playing the sound?
 	-- Please send ENT ID of the "controlling" controller
+
+	hook.Run("PlayerSetModel", p)
 end )
 
 function GM:BroadcastStart()
@@ -47,4 +49,9 @@ function GM:BroadcastParameters()
 		net.WriteBool(GAMEMODE.NowPlaying)
 		net.Send(v)
 	end
+end
+
+function GM:PlayerSetModel(p)
+	-- https://www.youtube.com/watch?v=1_hnTNlYCbw
+	p:SetModel("models/player/phoenix.mdl")
 end

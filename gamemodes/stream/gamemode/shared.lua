@@ -3,6 +3,8 @@ GM.Author = "Pretty-boy Yumi"
 GM.Email = "yumi@prettyboytellem.com"
 GM.Website = "https://prettyboytellem.com/"
 
+DeriveGamemode("base")
+
 function GM:PlayerSpawn(pl)
 	pl:SetMaxSpeed(self.MaxSpeed)
 	pl:SetWalkSpeed(self.WalkSpeed)
@@ -16,12 +18,12 @@ function GM:Initialize()
 		util.AddNetworkString("streamstage-stop")
 		util.AddNetworkString("streamstage-parameters")
 
-		net.Receive("streamstage-start", function() GAMEMODE.BroadcastStart() end)
-		net.Receive("streamstage-stop", function() GAMEMODE.BroadcastStop() end)
+		net.Receive("streamstage-start", function() GAMEMODE:BroadcastStart() end)
+		net.Receive("streamstage-stop", function() GAMEMODE:BroadcastStop() end)
 	else
 		-- GM-specific client functions
-		net.Receive("streamstage-start", function() GAMEMODE.StartShow() end)
-		net.Receive("streamstage-stop", function() GAMEMODE.StopShow() end)
+		net.Receive("streamstage-start", function() GAMEMODE:StartShow() end)
+		net.Receive("streamstage-stop", function() GAMEMODE:StopShow() end)
 
 		self.HideHUD = { ["CHudHealth"] = true,
 			["CHudCrosshair"] = true }
