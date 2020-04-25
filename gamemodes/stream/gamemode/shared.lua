@@ -10,6 +10,8 @@ function GM:PlayerSpawn(pl)
 	pl:SetWalkSpeed(self.WalkSpeed)
 	pl:SetRunSpeed(self.RunSpeed)
 	pl:SetJumpPower(self.JumpPower)
+
+	hook.Run("PlayerSetModel", pl)
 end
 
 function GM:Initialize()
@@ -28,6 +30,9 @@ function GM:Initialize()
 		self.HideHUD = { ["CHudHealth"] = true,
 			["CHudCrosshair"] = true }
 	end
+
+	team.SetUp(1, "Audience", Color(255, 255, 255))
+	team.SetUp(2, "DJ", Color(255, 165, 0), false)
 
 	-- Movement speed parameters
 	self.MaxSpeed = 300

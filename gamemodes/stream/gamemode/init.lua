@@ -14,10 +14,15 @@ hook.Add("PlayerInitialSpawn", "FullLoadSetup", function(ply)
 end )
 
 hook.Add("PlayerFullLoad", "FullLoad", function(p)
-	-- Which entity is playing the sound?
-	-- Please send ENT ID of the "controlling" controller
+	-- Broadcast chat
+	GAMEMODE:TellAll("Everyone welcome "..p:Name().."!")
 
-	hook.Run("PlayerSetModel", p)
+	if GAMEMODE.NowPlaying then
+		self:TellParameters(p)
+
+		net.Start("streamstage-start")
+		net.Send(v)
+	end
 end )
 
 function GM:BroadcastStart()
@@ -40,14 +45,24 @@ end
 
 function GM:BroadcastParameters()
 	for _, v in pairs(player.GetAll()) do
-		net.Start("streamstage-parameters")
-		net.WriteUInt(GAMEMODE.Attenuation, GAMEMODE.NetUIntSize)
-		net.WriteUInt(GAMEMODE.Emitter:EntIndex(), GAMEMODE.NetUIntSize)
-		net.WriteString(GAMEMODE.SoundURL)
-		net.WriteString(GAMEMODE.VideoURL)
-		net.WriteInt(GAMEMODE.Volume, GAMEMODE.NetUIntSize)
-		net.WriteBool(GAMEMODE.NowPlaying)
-		net.Send(v)
+		self:TellParameters(v)
+	end
+end
+
+function GM:TellParameters(p)
+	net.Start("streamstage-parameters")
+	net.WriteUInt(GAMEMODE.Attenuation, GAMEMODE.NetUIntSize)
+	net.WriteUInt(GAMEMODE.Emitter:EntIndex(), GAMEMODE.NetUIntSize)
+	net.WriteString(GAMEMODE.SoundURL)
+	net.WriteString(GAMEMODE.VideoURL)
+	net.WriteInt(GAMEMODE.Volume, GAMEMODE.NetUIntSize)
+	net.WriteBool(GAMEMODE.NowPlaying)
+	net.Send(p)
+end
+
+function GM:TellAll(msg)
+	for _, p in pairs(player.GetAll()) do
+		p:ChatPrint(msg)
 	end
 end
 

@@ -6,6 +6,9 @@ hook.Add("HUDShouldDraw", "HideHUD", function(name)
 end )
 
 function GM:AudioTick(station)
+	-- Guard against bad access
+	if !IsValid(station) then return end
+
 	if station:GetState() == GMOD_CHANNEL_BUFFERING then
 		print("Bufffffffffffferrrrrrrring...")
 		return
