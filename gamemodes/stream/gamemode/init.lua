@@ -14,9 +14,16 @@ hook.Add("PlayerInitialSpawn", "FullLoadSetup", function(ply)
 end )
 
 hook.Add("PlayerFullLoad", "FullLoad", function(p)
+	-- Assign to audience (default team)
+	p:SetTeam(1)
+	if p:IsAdmin() then
+		p:SetTeam(2)
+	end
+
 	-- Broadcast chat
 	GAMEMODE:TellAll("Everyone welcome "..p:Name().."!")
 
+	-- Hook into stream if we're in the middle of it
 	if GAMEMODE.NowPlaying then
 		self:TellParameters(p)
 

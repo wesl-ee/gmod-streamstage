@@ -63,7 +63,7 @@ function GM:StartShow()
 	end
 
 	-- Show HTML derma panel
-	if GAMEMODE.VideoURL ~= "" then
+	if GAMEMODE.VideoURL and GAMEMODE.VideoURL ~= "" then
 		GAMEMODE.VideoPanel = vgui.Create("DFrame")
 		local v = GAMEMODE.VideoPanel
 		v:SetPos(ScrW() - 426 - 10, 10)

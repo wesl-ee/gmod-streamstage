@@ -31,8 +31,9 @@ function GM:Initialize()
 			["CHudCrosshair"] = true }
 	end
 
-	team.SetUp(1, "Audience", Color(255, 255, 255))
-	team.SetUp(2, "DJ", Color(255, 165, 0), false)
+	-- Relative constants
+	self.TeamAudience = 1
+	self.TeamDJCrew = 2
 
 	-- Movement speed parameters
 	self.MaxSpeed = 300
@@ -47,6 +48,10 @@ function GM:Initialize()
 	for i = 1, 128 do
 		self.SmoothFFT[i] = 0
 	end
+
+	-- Audience, DJs, (admins?)
+	team.SetUp(self.TeamAudience, "Audience", Color(255, 255, 255))
+	team.SetUp(self.TeamDJCrew, "DJ", Color(255, 165, 0), false)
 end
 
 function GM:AttenuatedVolume(sqdist)
@@ -76,7 +81,16 @@ function GM:AttenuatedVolume(sqdist)
 end
 
 
-net.Receive("streamstage-parameters", function()
+net.Receive("streamstage-parameters", function(len, p)
+	-- Trash goes in the trash bin
+	-- if !IsValid(p) then return end
+
+	-- Server only accepts messages from DJs...
+	if SERVER and IsValid(p) and p:Team() ~= GAMEMODE.TeamDJCrew then return end
+	-- ...and clients only accept messages from the server
+	if CLIENT and IsValid(p) then return end
+
+	-- Update worldwide parameters
 	GAMEMODE.Attenuation = net.ReadUInt(GAMEMODE.NetUIntSize)
 	GAMEMODE.Emitter = Entity(net.ReadUInt(GAMEMODE.NetUIntSize))
 	GAMEMODE.SoundURL = net.ReadString()
