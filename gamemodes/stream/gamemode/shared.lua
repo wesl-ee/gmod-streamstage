@@ -119,4 +119,3 @@ function GM:CheckYourPriv(p)
 		p:Team() == GAMEMODE.TeamDJCrew or
 		p:Team() == GAMEMODE.TeamCreator
 end
-

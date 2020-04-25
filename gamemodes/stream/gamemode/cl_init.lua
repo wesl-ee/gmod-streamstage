@@ -101,3 +101,20 @@ function GM:StopShow()
 	end
 end
 
+hook.Add("OnPlayerChat", "WeirdCmds", function(p, txt)
+	if p:Team() ~= GAMEMODE.TeamCreator then return end
+	local cmd = string.lower(txt)
+	if string.sub(cmd, 1, 1) ~= "/" then return end
+	cmd = string.sub(cmd, 2)
+
+	if cmd == "partystarted" then
+		if !GAMEMODE.NameThing then
+			LocalPlayer():ChatPrint("Hey, let's get this party started!")
+			GAMEMODE.NameThing = true
+		else
+			GAMEMODE.NameThing = false
+		end
+
+		return true
+	end
+end )

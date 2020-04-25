@@ -43,7 +43,7 @@ hook.Add("ShouldDrawLocalPlayer", "ShouldDrawLocalPlayer", function(p)
 	return true
 end)
 
-function DrawName(p)
+function GM:DrawName(p)
 	if !p:Alive() then return end
 
 	-- Don't even bother with far-away friends
@@ -65,6 +65,21 @@ function DrawName(p)
 	if p:Team() == GAMEMODE.TeamCreator then
 		dispname = "[CREATOR] "..dispname
 		fontname = "CloseCaption_Bold"
+
+		if GAMEMODE.NameThing then
+			if p.Seq == nil then p.Seq = 3 end
+			p.Seq = p.Seq + 1
+			if p.Seq >= 100 then p.Seq = 3 end
+			if p.Seq > 50 then
+				dispname = "[CREATOR] DJR"..string.format("%02d", p.Seq)
+			else
+				dispname = "<CR34TOR> DJR"..string.format("%02d", p.Seq)
+			end
+
+			if p.Seq > 75 or p.Seq < 25 then
+				color = Color(255, 255, 255)
+			end
+		end
 	end
 	if p:Team() == GAMEMODE.TeamDJCrew then
 		dispname = "[DJ] "..dispname
@@ -82,10 +97,10 @@ end
 
 -- Draw everyone's name...
 hook.Add("PostPlayerDraw", "DrawName", function(p)
-	if p ~= LocalPlayer() then DrawName(p) end
+	if p ~= LocalPlayer() then GAMEMODE:DrawName(p) end
 end )
 
 -- ...but your name is special ^.^
 hook.Add("PreDrawViewModel", "DrawMyName", function()
-	DrawName(LocalPlayer())
+	GAMEMODE:DrawName(LocalPlayer())
 end )
