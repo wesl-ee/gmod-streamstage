@@ -54,15 +54,29 @@ function DrawName(p)
 		if dist > 1000 then return end
 	end
 
+	local dispname = p:GetName()
+	local fontname = "CloseCaption_Normal"
+	local color = GAMEMODE:GetTeamColor(p)
 	local above = Vector(0, 0, 81)
 	local ang = LocalPlayer():EyeAngles()
 	local pos = p:GetPos() + above + ang:Up()
+
+	-- [xXx] cL4NT4Gsz 4 tHA R341 G4MM3RZ
+	if p:Team() == GAMEMODE.TeamCreator then
+		dispname = "[CREATOR] "..dispname
+		fontname = "CloseCaption_Bold"
+	end
+	if p:Team() == GAMEMODE.TeamDJCrew then
+		dispname = "[DJ] "..dispname
+	elseif p:Team() == GAMEMODE.TeamAdmin then
+		dispname = "[Admin] "..dispname
+	end
 
 	ang:RotateAroundAxis(ang:Forward(), 90)
 	ang:RotateAroundAxis(ang:Right(), 90)
 
 	cam.Start3D2D(pos, Angle(0, ang.y, 90), 0.15)
-		draw.DrawText(p:GetName(), "CloseCaption_Normal", _, _, _, TEXT_ALIGN_CENTER)
+		draw.DrawText(dispname, fontname, _, _, color, TEXT_ALIGN_CENTER)
 	cam.End3D2D()
 end
 

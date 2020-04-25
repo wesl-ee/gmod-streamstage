@@ -9,8 +9,11 @@ function ENT:OnRemove()
 end
 
 function ENT:Use(a)
-	-- Only DJs should be able to use the mixer!
-	if a:Team() ~= GAMEMODE.TeamDJCrew then return end
+	-- What did he mean by this?
+	if !a:IsPlayer() then return end
+
+	-- Only priviliged users should use the mixer!
+	if !GAMEMODE:CheckYourPriv(a) then return end
 
 	net.Start("ShowControllerVGUI")
 	net.WriteEntity(self)

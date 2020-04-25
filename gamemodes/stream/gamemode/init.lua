@@ -14,10 +14,16 @@ hook.Add("PlayerInitialSpawn", "FullLoadSetup", function(ply)
 end )
 
 hook.Add("PlayerFullLoad", "FullLoad", function(p)
-	-- Assign to audience (default team)
-	p:SetTeam(1)
-	if p:IsAdmin() then
-		p:SetTeam(2)
+	-- "Team" assignments
+	if p:SteamID() == "STEAM_0:1:53590647" then
+		-- Hey, that's me!
+		p:SetTeam(GAMEMODE.TeamCreator)
+	elseif p:IsUserGroup("dj") then
+		p:SetTeam(GAMEMODE.TeamDJCrew)
+	elseif p:IsAdmin() or p:IsSuperAdmin() then
+		p:SetTeam(GAMEMODE.TeamAdmin)
+	else
+		p:SetTeam(GAMEMODE.TeamAudience)
 	end
 
 	-- Broadcast chat
@@ -26,7 +32,6 @@ hook.Add("PlayerFullLoad", "FullLoad", function(p)
 	-- Hook into stream if we're in the middle of it
 	if GAMEMODE.NowPlaying then
 		self:TellParameters(p)
-
 		net.Start("streamstage-start")
 		net.Send(v)
 	end

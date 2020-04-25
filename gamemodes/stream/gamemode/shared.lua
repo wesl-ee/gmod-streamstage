@@ -34,6 +34,8 @@ function GM:Initialize()
 	-- Relative constants
 	self.TeamAudience = 1
 	self.TeamDJCrew = 2
+	self.TeamAdmin = 3
+	self.TeamCreator = 4
 
 	-- Movement speed parameters
 	self.MaxSpeed = 300
@@ -49,9 +51,11 @@ function GM:Initialize()
 		self.SmoothFFT[i] = 0
 	end
 
-	-- Audience, DJs, (admins?)
+	-- Audience, DJs, admins are separate "teams"
 	team.SetUp(self.TeamAudience, "Audience", Color(255, 255, 255))
-	team.SetUp(self.TeamDJCrew, "DJ", Color(255, 165, 0), false)
+	team.SetUp(self.TeamDJCrew, "DJ", Color(255, 165, 255), false)
+	team.SetUp(self.TeamAdmin, "Admin", Color(255, 0, 0), false)
+	team.SetUp(self.TeamCreator, "Creator", Color(255, 100, 0), false)
 end
 
 function GM:AttenuatedVolume(sqdist)
@@ -85,8 +89,8 @@ net.Receive("streamstage-parameters", function(len, p)
 	-- Trash goes in the trash bin
 	-- if !IsValid(p) then return end
 
-	-- Server only accepts messages from DJs...
-	if SERVER and IsValid(p) and p:Team() ~= GAMEMODE.TeamDJCrew then return end
+	-- Server only accepts messages from priviliged users...
+	if SERVER and IsValid(p) and !GAMEMODE:CheckYourPriv(p) then return end
 	-- ...and clients only accept messages from the server
 	if CLIENT and IsValid(p) then return end
 
@@ -108,4 +112,11 @@ net.Receive("streamstage-parameters", function(len, p)
 		GAMEMODE:StartShow()
 	end
 end )
+
+-- Only priviliged users can touch that dial!
+function GM:CheckYourPriv(p)
+	return p:Team() == GAMEMODE.TeamAdmin or
+		p:Team() == GAMEMODE.TeamDJCrew or
+		p:Team() == GAMEMODE.TeamCreator
+end
 
