@@ -31,7 +31,7 @@ hook.Add("PlayerFullLoad", "FullLoad", function(p)
 
 	-- Hook into stream if we're in the middle of it
 	if GAMEMODE.NowPlaying then
-		self:TellParameters(p)
+		GAMEMODE:TellParameters(p)
 		net.Start("streamstage-start")
 		net.Send(v)
 	end
