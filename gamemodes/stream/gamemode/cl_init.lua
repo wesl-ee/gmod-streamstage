@@ -47,6 +47,39 @@ function GM:StationLoaded(station)
 	hook.Add("Tick", "AudioTick", function()
 		GAMEMODE:AudioTick(station)
 	end )
+
+	hook.Add("HUDPaint", "HUDCurrentlyPlaying", function()
+		local padding = 20
+		local maxw = 350
+		local lineheight = 10
+
+		local artist
+		local title
+		local tags = station:GetTagsOGG() || station:GetTagsID3()
+		for _, v in pairs(tags) do
+			local sep = v:find("=")
+			local key = v:sub(0, sep-1):lower()
+			local value = v:sub(sep+1)
+
+			if key == "artist" then artist = value end
+			if key == "title" then title = value end
+		end
+
+		surface.SetFont("CloseCaption_Normal")
+		surface.SetTextColor(255, 255, 0)
+
+		if artist then
+			surface.SetTextPos(ScrW() - maxw - padding,
+				ScrH() - padding - 20 - (20+lineheight)*2)
+			surface.DrawText("Artist: "..artist)
+		end
+
+		if title then
+			surface.SetTextPos(ScrW() - maxw - padding,
+				ScrH() - padding - 20 - (20+lineheight))
+			surface.DrawText("Title: "..title)
+		end
+	end )
 end
 
 function GM:StartShow()
@@ -82,6 +115,8 @@ end
 
 function GM:StopShow()
 	GAMEMODE.NowPlaying = false
+
+	hook.Remove("HUDPaint", "HUDCurrentlyPlaying")
 
 	-- Stop audio
 	if GAMEMODE.AudioChannel then
