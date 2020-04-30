@@ -16,6 +16,8 @@ function GM:AudioTick(station)
 
 	-- Compute the FFT
 	local window = self.FFTAveragingWindow || 3
+	local basswindow = 2
+	local bassavg = 0
 	self.FFT = { }
 	station:FFT(self.FFT, self.FFTType)
 	for i, sample in pairs(self.FFT) do
@@ -23,14 +25,48 @@ function GM:AudioTick(station)
 
 		-- Rolling average
 		self.SmoothFFT[i] = sample/window +
-			(window-1)*smoothsample/(window)
+			(window-1)*smoothsample/window
+
+		if i < 10 then
+			bassavg = bassavg + sample
+		end
+	end
+	local bassavg = bassavg / 10
+
+	-- Rolling average on top of a rolling average... oh my!
+	-- ... just so we don't overdo the effects
+	if !self.FFTBassAvg then self.FFTBassAvg = bassavg
+	else
+		self.FFTBassAvg = bassavg/basswindow +
+			(basswindow-1)*self.FFTBassAvg/basswindow
 	end
 
+	local mypos = LocalPlayer():GetPos()
+	local emitpos = GAMEMODE.Emitter:GetPos()
+
 	-- Sound Attenuation
-	local dist = LocalPlayer():GetPos():DistToSqr(
-		GAMEMODE.Emitter:GetPos())
-	local attenvol = GAMEMODE:AttenuatedVolume(dist)
-	station:SetVolume(attenvol/100)
+	local dist = mypos:DistToSqr(emitpos)
+	local attenvol = GAMEMODE:AttenuatedVolume(dist) / 100
+	station:SetVolume(attenvol)
+
+	-- We use this percentage elsewhere (FOV calculation etc.)
+	self.AttenPercent = attenvol
+
+	-- Dynamically pan stereo depending on your bias to the sound source
+	-- This would be cool if SetPan() used values other than -1, 0, or 1
+	-- So this is unused until then... (maybe forever!)
+	-- local vec = (mypos - emitpos);
+
+	-- local eyeangles = LocalPlayer():EyeAngles()
+
+	-- local relangle = eyeangles.y - vec:Angle().y + 180
+	-- if relangle < 0 then relangle = relangle + 360 end
+
+	-- local polarity = math.sin(math.rad(relangle))
+
+	-- This would be cool if SetPan() took values other than -1, 0, 1
+	-- station:SetPan(0)
+
 end
 
 function GM:StationLoaded(station)
@@ -153,3 +189,15 @@ hook.Add("OnPlayerChat", "WeirdCmds", function(p, txt)
 		return true
 	end
 end )
+
+function GM:RenderScreenspaceEffects()
+	if self.NowPlaying then
+		local atten = self.AttenPercent
+		if atten then
+			DrawMotionBlur(0.4, atten, 0.015)
+		end
+		if self.FFTBassAvg then
+			DrawBloom(0.4, atten*self.FFTBassAvg*10, 9, 9, 1, 1, 1, 1, 1)
+		end
+	end
+end
