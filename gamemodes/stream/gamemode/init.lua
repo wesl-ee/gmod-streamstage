@@ -79,6 +79,9 @@ function GM:TellAll(msg)
 end
 
 function GM:PlayerSetModel(p)
+	-- Override buggy thirdperson model
+	if p:GetModel() == "models/player.mdl" then
 	-- https://www.youtube.com/watch?v=1_hnTNlYCbw
-	p:SetModel("models/player/phoenix.mdl")
+		p:SetModel("models/player/phoenix.mdl")
+	end
 end
