@@ -233,7 +233,7 @@ hook.Add("OnPlayerChat", "WeirdCmds", function(p, txt)
 end )
 
 function GM:RenderScreenspaceEffects()
-	if self.NowPlaying and self.Volume > 20 then
+	if self.NowPlaying and self.AttenPercen && self.Volume > 20 then
 		local scale = self.AttenPercent * (self.Volume / 100)
 		if scale then
 			DrawMotionBlur(0.4, scale*10, 0.015)
