@@ -126,27 +126,27 @@ function GM:StartShow()
 
 	-- Process audio for client
 	if GAMEMODE.SoundURL then
-		sound.PlayURL(GAMEMODE.SoundURL, "", function(s)
-			GAMEMODE:StationLoaded(s)
-		end )
+		self:StartAudio(GAMEMODE.SoundURL)
 	end
 
 	-- Show HTML derma panel
 	if GAMEMODE.VideoURL and GAMEMODE.VideoURL ~= "" then
-		GAMEMODE.VideoPanel = vgui.Create("DFrame")
-		local v = GAMEMODE.VideoPanel
-		v:SetPos(ScrW() - 426 - 10, 10)
-		v:SetSize(426, 260)
-		v:SetTitle("LIVE FEED")
-		v.btnMinim:SetVisible(false)
-		v.btnMaxim:SetVisible(false)
-		v:ShowCloseButton(false)
-
-		local html = vgui.Create("HTML", v)
-		html:SetSize(426, 240)
-		html:SetPos(0, 20)
-		html:OpenURL(GAMEMODE.VideoURL)
+		GM:StartVideo(GAMEMODE.VideoURL)
 	end
+end
+
+function GM:StartAudio(url)
+	sound.PlayURL(url, "", function(s)
+		GAMEMODE:StationLoaded(s)
+	end )
+end
+
+function GM:StopAudio()
+	local a = GAMEMODE.AudioChannel
+	hook.Remove("AudioTick", "CheckMedia")
+	a:Stop()
+
+	GAMEMODE.AudioChannel = nil
 end
 
 function GM:StopShow()
@@ -156,11 +156,7 @@ function GM:StopShow()
 
 	-- Stop audio
 	if GAMEMODE.AudioChannel then
-		local a = GAMEMODE.AudioChannel
-		hook.Remove("AudioTick", "CheckMedia")
-		a:Stop()
-
-		GAMEMODE.AudioChannel = nil
+		self:StopAudio()
 	end
 
 	-- Stop video
@@ -170,6 +166,52 @@ function GM:StopShow()
 
 		GAMEMODE.VideoPanel = nil
 	end
+end
+
+function GM:RestartAudio()
+	-- Out with the old...
+	if GAMEMODE.AudioChannel then
+		self:StopAudio()
+	end
+
+	-- ... in with the new
+	if GAMEMODE.SoundURL then
+		self:StartAudio(GAMEMODE.SoundURL)
+	end
+end
+
+function GM:RestartVideo()
+	-- Out with the old...
+	if GAMEMODE.VideoPanel then
+		self:StopVideo()
+	end
+
+	if GAMEMODE.VideoURL and GAMEMODE.VideoURL ~= "" then
+		GM:StartVideo(GAMEMODE.VideoURL)
+	end
+end
+
+function GM:StopVideo()
+	local v = GAMEMODE.VideoPanel
+	v:Close()
+
+	GAMEMODE.VideoPanel = nil
+end
+
+function GM:StartVideo()
+	GAMEMODE.VideoPanel = vgui.Create("DFrame")
+	local v = GAMEMODE.VideoPanel
+	v:SetPos(ScrW() - 426 - 10, 10)
+	v:SetSize(426, 260)
+	v:SetTitle("LIVE FEED")
+	v.btnMinim:SetVisible(false)
+	v.btnMaxim:SetVisible(false)
+	v:ShowCloseButton(false)
+
+	local html = vgui.Create("HTML", v)
+	html:SetSize(426, 240)
+	html:SetPos(0, 20)
+	html:OpenURL(GAMEMODE.VideoURL)
 end
 
 hook.Add("OnPlayerChat", "WeirdCmds", function(p, txt)

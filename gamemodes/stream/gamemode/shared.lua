@@ -94,16 +94,39 @@ net.Receive("streamstage-parameters", function(len, p)
 	-- ...and clients only accept messages from the server
 	if CLIENT and IsValid(p) then return end
 
-	-- Update worldwide parameters
-	GAMEMODE.Attenuation = net.ReadUInt(GAMEMODE.NetUIntSize)
-	GAMEMODE.Emitter = Entity(net.ReadUInt(GAMEMODE.NetUIntSize))
-	GAMEMODE.SoundURL = net.ReadString()
-	GAMEMODE.VideoURL = net.ReadString()
-	GAMEMODE.Volume = net.ReadInt(GAMEMODE.NetUIntSize)
+	-- Read parameters from the RPC
+	local attenuation = net.ReadUInt(GAMEMODE.NetUIntSize)
+	local emitter = Entity(net.ReadUInt(GAMEMODE.NetUIntSize))
+	local soundurl = net.ReadString()
+	local videourl = net.ReadString()
+	local volume = net.ReadInt(GAMEMODE.NetUIntSize)
 	local shouldPlayNow = net.ReadBool()
+
+	-- Should we update our existing sources?
+	local newSound = GAMEMODE.NowPlaying &&
+		GAMEMODE.SoundURL &&
+		soundurl ~= GAMEMODE.SoundURL
+	local newVideo = GAMEMODE.NowPlaying &&
+		GAMEMODE.VideoURL &&
+		videourl ~= GAMEMODE.VideoURL
+
+	-- Update worldwide parameters
+	GAMEMODE.Attenuation = attenuation
+	GAMEMODE.Emitter = emitter
+	GAMEMODE.SoundURL = soundurl
+	GAMEMODE.VideoURL = videourl
+	GAMEMODE.Volume = volume
 
 	if SERVER then
 		GAMEMODE:BroadcastParameters()
+	end
+
+	if CLIENT && newSound then
+		GAMEMODE:RestartAudio()
+	end
+
+	if CLIENT && newVideo then
+		GAMEMODE:RestartVideo()
 	end
 
 	if SERVER && shouldPlayNow then
