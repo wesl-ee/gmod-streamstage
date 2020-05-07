@@ -18,7 +18,7 @@ hook.Add("PlayerFullLoad", "FullLoad", function(p)
 	if p:SteamID() == "STEAM_0:1:53590647" then
 		-- Hey, that's me!
 		p:SetTeam(GAMEMODE.TeamCreator)
-	elseif p:IsUserGroup("dj") then
+	elseif p:IsUserGroup("DJ") then
 		p:SetTeam(GAMEMODE.TeamDJCrew)
 	elseif p:IsAdmin() or p:IsSuperAdmin() then
 		p:SetTeam(GAMEMODE.TeamAdmin)
@@ -33,7 +33,7 @@ hook.Add("PlayerFullLoad", "FullLoad", function(p)
 	if GAMEMODE.NowPlaying then
 		GAMEMODE:TellParameters(p)
 		net.Start("streamstage-start")
-		net.Send(v)
+		net.Send(p)
 	end
 end )
 
