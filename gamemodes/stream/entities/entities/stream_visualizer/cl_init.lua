@@ -53,6 +53,7 @@ function ENT:Draw()
 		local drawx = VIS_WIDTH - i * BAR_WIDTH
 		local drawheight = relval * AMP
 		if drawheight > VIS_HEIGHT then drawheight = VIS_HEIGHT end
+		if drawheight < 0 then drawheight = 0 end
 
 		-- Actually draw
 		surface.DrawRect(drawx, 0, BAR_WIDTH + 1, relval*AMP)

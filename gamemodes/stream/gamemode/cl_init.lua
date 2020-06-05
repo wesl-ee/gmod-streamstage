@@ -16,12 +16,13 @@ function GM:AudioTick(station)
 
 	-- Compute the FFT
 	local window = self.FFTAveragingWindow || 3
-	local basswindow = 2
+	local basswindow = 10
 	local bassavg = 0
 	self.FFT = { }
 	station:FFT(self.FFT, self.FFTType)
 	for i, sample in pairs(self.FFT) do
 		local smoothsample = self.SmoothFFT[i]
+		if smoothsample == nil then continue end
 
 		-- Rolling average
 		self.SmoothFFT[i] = sample/window +
@@ -70,11 +71,15 @@ function GM:AudioTick(station)
 end
 
 function GM:StationLoaded(station)
+	GAMEMODE.AudioChannel = station
+
 	if !IsValid(station) then
 		LocalPlayer():ChatPrint("Invalid Stream URL!")
+		GAMEMODE.AudioChannel = nil
+		GAMEMODE.NowPlaying = false
+		return false
 	end
 
-	GAMEMODE.AudioChannel = station
 	station:SetVolume(GAMEMODE.Volume/100)
 
 	station:SetPos(GAMEMODE.Emitter:GetPos())
@@ -116,6 +121,7 @@ function GM:StationLoaded(station)
 			surface.DrawText("Title: "..title)
 		end
 	end )
+	return true
 end
 
 function GM:StartShow()
@@ -126,14 +132,19 @@ function GM:StartShow()
 
 	-- Process audio for client
 	if GAMEMODE.SoundURL then
-		self:StartAudio(GAMEMODE.SoundURL)
+		if (!self:StartAudio(GAMEMODE.SoundURL)) then
+			self:StopShow()
+		end
 	end
 end
 
 function GM:StartAudio(url)
 	sound.PlayURL(url, "", function(s)
-		self:StationLoaded(s)
+		if (!self:StationLoaded(s)) then
+			return false
+		end
 	end )
+	return true
 end
 
 function GM:StopAudio()

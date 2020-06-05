@@ -44,7 +44,7 @@ function GM:Initialize()
 	self.JumpPower = 260
 
 	self.NetUIntSize = 32
-	self.FFTType = FFT_256
+	self.FFTType = FFT_16384
 	self.FFTAveragingWindow = 3
 	self.SmoothFFT = { }
 	for i = 1, 128 do
