@@ -128,16 +128,11 @@ function GM:StartShow()
 	if GAMEMODE.SoundURL then
 		self:StartAudio(GAMEMODE.SoundURL)
 	end
-
-	-- Show HTML derma panel
-	if GAMEMODE.VideoURL and GAMEMODE.VideoURL ~= "" then
-		self:StartVideo(GAMEMODE.VideoURL)
-	end
 end
 
 function GM:StartAudio(url)
 	sound.PlayURL(url, "", function(s)
-		GAMEMODE:StationLoaded(s)
+		self:StationLoaded(s)
 	end )
 end
 
@@ -158,14 +153,6 @@ function GM:StopShow()
 	if GAMEMODE.AudioChannel then
 		self:StopAudio()
 	end
-
-	-- Stop video
-	if GAMEMODE.VideoPanel then
-		local v = GAMEMODE.VideoPanel
-		v:Close()
-
-		GAMEMODE.VideoPanel = nil
-	end
 end
 
 function GM:RestartAudio()
@@ -178,40 +165,6 @@ function GM:RestartAudio()
 	if GAMEMODE.SoundURL then
 		self:StartAudio(GAMEMODE.SoundURL)
 	end
-end
-
-function GM:RestartVideo()
-	-- Out with the old...
-	if GAMEMODE.VideoPanel then
-		self:StopVideo()
-	end
-
-	if GAMEMODE.VideoURL and GAMEMODE.VideoURL ~= "" then
-		GM:StartVideo(GAMEMODE.VideoURL)
-	end
-end
-
-function GM:StopVideo()
-	local v = GAMEMODE.VideoPanel
-	v:Close()
-
-	GAMEMODE.VideoPanel = nil
-end
-
-function GM:StartVideo()
-	GAMEMODE.VideoPanel = vgui.Create("DFrame")
-	local v = GAMEMODE.VideoPanel
-	v:SetPos(ScrW() - 426 - 10, 10)
-	v:SetSize(426, 260)
-	v:SetTitle("LIVE FEED")
-	v.btnMinim:SetVisible(false)
-	v.btnMaxim:SetVisible(false)
-	v:ShowCloseButton(false)
-
-	local html = vgui.Create("HTML", v)
-	html:SetSize(426, 240)
-	html:SetPos(0, 20)
-	html:OpenURL(GAMEMODE.VideoURL)
 end
 
 hook.Add("OnPlayerChat", "WeirdCmds", function(p, txt)

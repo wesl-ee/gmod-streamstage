@@ -98,7 +98,6 @@ net.Receive("streamstage-parameters", function(len, p)
 	local attenuation = net.ReadUInt(GAMEMODE.NetUIntSize)
 	local emitter = Entity(net.ReadUInt(GAMEMODE.NetUIntSize))
 	local soundurl = net.ReadString()
-	local videourl = net.ReadString()
 	local volume = net.ReadInt(GAMEMODE.NetUIntSize)
 	local shouldPlayNow = net.ReadBool()
 
@@ -106,15 +105,11 @@ net.Receive("streamstage-parameters", function(len, p)
 	local newSound = GAMEMODE.NowPlaying &&
 		GAMEMODE.SoundURL &&
 		soundurl ~= GAMEMODE.SoundURL
-	local newVideo = GAMEMODE.NowPlaying &&
-		GAMEMODE.VideoURL &&
-		videourl ~= GAMEMODE.VideoURL
 
 	-- Update worldwide parameters
 	GAMEMODE.Attenuation = attenuation
 	GAMEMODE.Emitter = emitter
 	GAMEMODE.SoundURL = soundurl
-	GAMEMODE.VideoURL = videourl
 	GAMEMODE.Volume = volume
 
 	if SERVER then
@@ -123,10 +118,6 @@ net.Receive("streamstage-parameters", function(len, p)
 
 	if CLIENT && newSound then
 		GAMEMODE:RestartAudio()
-	end
-
-	if CLIENT && newVideo then
-		GAMEMODE:RestartVideo()
 	end
 
 	if SERVER && shouldPlayNow then

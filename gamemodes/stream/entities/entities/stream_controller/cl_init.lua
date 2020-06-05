@@ -11,29 +11,12 @@ function ENT:ShowUsePanel()
 	frame.btnMinim:SetVisible(false)
 	frame.btnMaxim:SetVisible(false)
 
-	frame:SetSize(520, 200)
+	frame:SetSize(520, 150)
 
 	local audiolabel = vgui.Create("DLabel", frame)
 	audiolabel:SetPos(10, 30)
 	audiolabel:SetText("Audio URL:")
 	audiolabel:SizeToContents()
-
-	local videolabel = vgui.Create("DLabel", frame)
-	videolabel:SetPos(10, 70)
-	videolabel:SetText("Video URL (Optional):")
-	videolabel:SizeToContents()
-
-	local videobox = vgui.Create("DTextEntry", frame)
-	videobox:SetPos(10, 90)
-	videobox:SetSize(500, 20)
-
-	if GAMEMODE.VideoURL then
-		videobox:SetText(GAMEMODE.VideoURL)
-	end
-
-	videobox.OnEnter = function(me)
-	end
-
 
 	local audiobox = vgui.Create("DTextEntry", frame)
 	audiobox:SetPos(10, 50)
@@ -47,11 +30,11 @@ function ENT:ShowUsePanel()
 	end
 
 	local vollabel = vgui.Create("DLabel", frame)
-	vollabel:SetPos(10, 130)
+	vollabel:SetPos(10, 80)
 	vollabel:SetText("Vol.:")
 	vollabel:SetSize(30, 20)
 	local vol = vgui.Create("DNumberWang", frame)
-	vol:SetPos(40, 130)
+	vol:SetPos(40, 80)
 	vol:SetSize(40, 20)
 
 	if GAMEMODE.Volume then
@@ -59,11 +42,11 @@ function ENT:ShowUsePanel()
 	else vol:SetText(100) end
 
 	local attenlabel = vgui.Create("DLabel", frame)
-	attenlabel:SetPos(90, 130)
+	attenlabel:SetPos(90, 80)
 	attenlabel:SetText("Attenuation:")
 	attenlabel:SetSize(70, 20)
 	local atten = vgui.Create("DNumberWang", frame)
-	atten:SetPos(170, 130)
+	atten:SetPos(170, 80)
 	atten:SetSize(40, 20)
 	if GAMEMODE.Attenuation then
 		atten:SetText(GAMEMODE.Attenuation)
@@ -71,7 +54,7 @@ function ENT:ShowUsePanel()
 
 	local playbutton = vgui.Create("DButton", frame)
 	playbutton:SetText("Play")
-	playbutton:SetPos(0, 160)
+	playbutton:SetPos(0, 110)
 	playbutton:SetSize(40, 20)
 	playbutton:CenterHorizontal()
 
@@ -80,7 +63,6 @@ function ENT:ShowUsePanel()
 		net.WriteUInt(atten:GetValue(), GAMEMODE.NetUIntSize)
 		net.WriteUInt(self:EntIndex(), GAMEMODE.NetUIntSize)
 		net.WriteString(audiobox:GetValue())
-		net.WriteString(videobox:GetValue())
 		net.WriteUInt(vol:GetValue(), GAMEMODE.NetUIntSize)
 		net.WriteBool(true)
 		net.SendToServer()
@@ -90,7 +72,7 @@ function ENT:ShowUsePanel()
 
 	local stopbutton = vgui.Create("DButton", frame)
 	stopbutton:SetText("Stop")
-	stopbutton:SetPos(470, 160)
+	stopbutton:SetPos(470, 110)
 	stopbutton:SetSize(40, 20)
 
 	stopbutton.DoClick = function(me)
