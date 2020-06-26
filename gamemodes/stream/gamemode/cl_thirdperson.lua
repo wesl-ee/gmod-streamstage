@@ -1,4 +1,15 @@
+function InThirdPerson()
+	-- First-person cases
+	if GetConVar("stream_forcefirstperson"):GetBool() then return false end
+	if g_VR and g_VR.active then return false end
+
+	-- Default to third-person
+	return true
+end
+
 function ThirdPerson(ply, pos, angles, fov)
+	if not InThirdPerson() then return end
+
 	local view = {}
 	local ydist = 80
 	local xdist = 30
@@ -29,6 +40,8 @@ function ThirdPerson(ply, pos, angles, fov)
 end
 
 function GM:HUDPaint( )
+	if not InThirdPerson() then return end
+
 	local ply = LocalPlayer();
 	local p = LocalPlayer():GetEyeTrace().HitPos:ToScreen()
 	local x,y = p.x, p.y
@@ -40,6 +53,8 @@ end
 hook.Add("CalcView", "ThirdPerson", ThirdPerson)
 
 hook.Add("ShouldDrawLocalPlayer", "ShouldDrawLocalPlayer", function(p)
+	if not InThirdPerson() then return end
+
 	return true
 end)
 

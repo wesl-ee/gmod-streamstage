@@ -56,6 +56,12 @@ function GM:Initialize()
 	team.SetUp(self.TeamDJCrew, "DJ", Color(255, 165, 255), false)
 	team.SetUp(self.TeamAdmin, "Admin", Color(255, 0, 0), false)
 	team.SetUp(self.TeamCreator, "Creator", Color(255, 100, 0), false)
+
+	-- ConVars
+	if CLIENT then
+		CreateConVar("stream_forcefirstperson", "false", FCVAR_USERINFO,
+			"Force First Person")
+	end
 end
 
 function GM:AttenuatedVolume(sqdist)
