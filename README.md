@@ -5,7 +5,17 @@ This is an add-on for Garry's Mod which introduces a new gamemode and a
 few new entities for it as well. This game mode is designed for virtual
 DJ sets and things like that.
 
-![Icon](icon.jpg)
+![Icon](https://djr3.org/static/posters/djr3-synesthesia-002.jpg)
+
+You can watch some examples of me using this mod below:
+
+- [My VR Set for EVA Synesthesia
+  #002](https://www.youtube.com/watch?v=T6o6Tdlvhcw)
+- [Club Howler Virtual Rave
+  3](https://djr3.org/sets/2020/club-howler-week-3.html)
+- [Club Howler Virtual Rave
+  2](https://djr3.org/sets/2020/club-howler-week-2.html)
+- [End of howler](https://djr3.org/sets/2020/end-of-howler-one-more-final.html)
 
 Its primary intention is to be used in the creation of a virtual-club
 environment (with multiple visualizers around the room) for use in on-line DJ
