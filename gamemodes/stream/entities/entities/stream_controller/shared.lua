@@ -4,6 +4,10 @@ ENT.PrintName = "Stream Controller (Mixtrack Pro)"
 ENT.Category = "Stream Kit"
 ENT.Spawnable = true
 
+function ENT:UpdateTransmitState()
+	return TRANSMIT_ALWAYS
+end
+
 function ENT:Initialize()
 	if SERVER then
 		self:SetModel("models/props/stream_controller.mdl")
@@ -21,6 +25,11 @@ function ENT:Initialize()
 		end
 
 		self:SetUseType(SIMPLE_USE)
+
+	end
+
+	if not GAMEMODE.Emitter then
+		GAMEMODE.Emitter = ents.FindByClass("stream_controller")[1]
 	end
 end
 
