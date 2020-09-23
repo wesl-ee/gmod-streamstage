@@ -62,6 +62,19 @@ function GM:Initialize()
 		CreateConVar("stream_forcefirstperson", "false", FCVAR_USERINFO,
 			"Force First Person")
 	end
+
+	if SERVER then
+		CreateConVar("stream_url", "http://stream.djr3.org:8000/Club-Howler-Set.ogg", FCVAR_NONE,
+			"Music Stream URL")
+		CreateConVar("stream_autoplay", 1, FCVAR_NONE,
+			 "Autoplay Music Stream?")
+
+		GAMEMODE.SoundURL = GetConVar("stream_url"):GetString()
+		GAMEMODE.Volume = 50
+		GAMEMODE.Attenuation = 60
+		GAMEMODE.NowPlaying = GetConVar("stream_autoplay"):GetBool()
+	end
+
 end
 
 function GM:AttenuatedVolume(sqdist)
@@ -102,7 +115,7 @@ net.Receive("streamstage-parameters", function(len, p)
 
 	-- Read parameters from the RPC
 	local attenuation = net.ReadUInt(GAMEMODE.NetUIntSize)
-	local emitter = Entity(net.ReadUInt(GAMEMODE.NetUIntSize))
+	local emitter = net.ReadUInt(GAMEMODE.NetUIntSize)
 	local soundurl = net.ReadString()
 	local volume = net.ReadInt(GAMEMODE.NetUIntSize)
 	local shouldPlayNow = net.ReadBool()
@@ -114,7 +127,7 @@ net.Receive("streamstage-parameters", function(len, p)
 
 	-- Update worldwide parameters
 	GAMEMODE.Attenuation = attenuation
-	GAMEMODE.Emitter = emitter
+	GAMEMODE.Emitter = Entity(emitter)
 	GAMEMODE.SoundURL = soundurl
 	GAMEMODE.Volume = volume
 

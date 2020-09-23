@@ -196,14 +196,70 @@ hook.Add("OnPlayerChat", "WeirdCmds", function(p, txt)
 	end
 end )
 
-function GM:RenderScreenspaceEffects()
-	if self.NowPlaying and self.AttenPercent && self.Volume > 20 then
-		local scale = self.AttenPercent * (self.Volume / 100)
-		if scale then
-			DrawMotionBlur(0.4, scale*10, 0.015)
-		end
-		if self.FFTBassAvg then
-			DrawBloom(0.4, scale*self.FFTBassAvg*50, 10, 10, 1, 5, 1, 1, 1)
-		end
+local mat_Downsample = Material( "pp/downsample" )
+
+local mat_Bloom = Material( "pp/bloom" )
+local tex_Bloom0 = render.GetBloomTex0()
+
+function DrawBassBloom(target, intensity)
+	if target then
+		render.PushRenderTarget(target)
+		mat_Downsample:SetTexture("$fbtexture", target)
+	else
+		render.CopyRenderTargetToTexture( render.GetScreenEffectTexture() )
+		mat_Downsample:SetTexture("$fbtexture", render.GetScreenEffectTexture())
+	end
+
+	mat_Downsample:SetFloat("$darken", 0.7)
+	mat_Downsample:SetFloat("$multiply", intensity)
+
+	render.PushRenderTarget(tex_Bloom0)
+
+	render.SetMaterial(mat_Downsample)
+	render.DrawScreenQuad()
+
+	render.BlurRenderTarget(tex_Bloom0, 10, 10, 1)
+
+	render.PopRenderTarget()
+
+	mat_Bloom:SetFloat("$levelr", 1)
+	mat_Bloom:SetFloat("$levelg", 1)
+	mat_Bloom:SetFloat("$levelb", 1)
+	mat_Bloom:SetFloat("$colormul", 5)
+	mat_Bloom:SetTexture("$basetexture", tex_Bloom0)
+
+	render.SetMaterial(mat_Bloom)
+
+	-- Render
+	render.DrawScreenQuad()
+	if target then
+		render.PopRenderTarget()
 	end
 end
+
+hook.Add("VRMod_Start", "StreamVRModInit", function()
+	hook.Add("VRMod_PostRender", "BloomBass", function()
+	if GAMEMODE.NowPlaying and GAMEMODE.AttenPercent && GAMEMODE.Volume > 20 then
+		local scale = GAMEMODE.AttenPercent * (GAMEMODE.Volume / 100)
+		-- DrawMotionBlur(0.4, scale*10, 0.015)
+		if GAMEMODE.FFTBassAvg then
+			DrawBassBloom(nil, scale*GAMEMODE.FFTBassAvg*1500)
+			DrawBassBloom(g_VR.rt, scale*GAMEMODE.FFTBassAvg*1500)
+		end
+	end
+	end )
+end )
+
+hook.Add("VRMod_Exit", "StreamVRModExit", function()
+	hook.Remove("VRMod_PostRender", "BloomBass")
+end )
+
+hook.Add("RenderScreenspaceEffects", "BloomBass", function()
+	if GAMEMODE.NowPlaying and GAMEMODE.AttenPercent && GAMEMODE.Volume > 20 then
+		local scale = GAMEMODE.AttenPercent * (GAMEMODE.Volume / 100)
+		-- DrawMotionBlur(0.4, scale*10, 0.015)
+		if GAMEMODE.FFTBassAvg then
+			DrawBassBloom(nil, scale*GAMEMODE.FFTBassAvg*1500)
+		end
+	end
+end )

@@ -29,12 +29,14 @@ hook.Add("PlayerFullLoad", "FullLoad", function(p)
 	-- Broadcast chat
 	GAMEMODE:TellAll("Everyone welcome "..p:Name().."!")
 
+	-- Update parameters
+	GAMEMODE:TellParameters(p)
 	-- Hook into stream if we're in the middle of it
 	if GAMEMODE.NowPlaying then
-		GAMEMODE:TellParameters(p)
 		net.Start("streamstage-start")
 		net.Send(p)
 	end
+
 end )
 
 function GM:BroadcastStart()
@@ -64,7 +66,12 @@ end
 function GM:TellParameters(p)
 	net.Start("streamstage-parameters")
 	net.WriteUInt(GAMEMODE.Attenuation, GAMEMODE.NetUIntSize)
-	net.WriteUInt(GAMEMODE.Emitter:EntIndex(), GAMEMODE.NetUIntSize)
+	if not GAMEMODE.Emitter then
+		-- Play "locally" if there is no DJ board spawned
+		net.WriteUInt(p:EntIndex())
+	else
+		net.WriteUInt(GAMEMODE.Emitter:EntIndex(), GAMEMODE.NetUIntSize)
+	end
 	net.WriteString(GAMEMODE.SoundURL)
 	net.WriteInt(GAMEMODE.Volume, GAMEMODE.NetUIntSize)
 	net.WriteBool(GAMEMODE.NowPlaying)

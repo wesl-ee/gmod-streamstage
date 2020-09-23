@@ -11,7 +11,7 @@ function ENT:ShowUsePanel()
 	frame.btnMinim:SetVisible(false)
 	frame.btnMaxim:SetVisible(false)
 
-	frame:SetSize(520, 150)
+	frame:SetSize(520, 180)
 
 	local audiolabel = vgui.Create("DLabel", frame)
 	audiolabel:SetPos(10, 30)
@@ -21,6 +21,7 @@ function ENT:ShowUsePanel()
 	local audiobox = vgui.Create("DTextEntry", frame)
 	audiobox:SetPos(10, 50)
 	audiobox:SetSize(500,20)
+	audiobox:SetEnabled(false)
 
 	if GAMEMODE.SoundURL then
 		audiobox:SetText(GAMEMODE.SoundURL)
@@ -31,30 +32,36 @@ function ENT:ShowUsePanel()
 
 	local vollabel = vgui.Create("DLabel", frame)
 	vollabel:SetPos(10, 80)
-	vollabel:SetText("Vol.:")
-	vollabel:SetSize(30, 20)
-	local vol = vgui.Create("DNumberWang", frame)
-	vol:SetPos(40, 80)
-	vol:SetSize(40, 20)
+	vollabel:SetText("Volume:")
+	vollabel:SetSize(70, 20)
+	local vol = vgui.Create("DNumSlider", frame)
+	vol:SetPos(-170, 80)
+	vol:SetSize(600, 20)
+	vol:SetMax(100)
+	vol:SetMin(0)
+	vol:SetDecimals(0)
 
 	if GAMEMODE.Volume then
-		vol:SetText(GAMEMODE.Volume)
-	else vol:SetText(100) end
+		vol:SetValue(GAMEMODE.Volume)
+	else vol:SetValue(100) end
 
 	local attenlabel = vgui.Create("DLabel", frame)
-	attenlabel:SetPos(90, 80)
+	attenlabel:SetPos(10, 110)
 	attenlabel:SetText("Attenuation:")
 	attenlabel:SetSize(70, 20)
-	local atten = vgui.Create("DNumberWang", frame)
-	atten:SetPos(170, 80)
-	atten:SetSize(40, 20)
+	local atten = vgui.Create("DNumSlider", frame)
+	atten:SetPos(-170, 110)
+	atten:SetSize(600, 20)
+	atten:SetMax(100)
+	atten:SetMin(0)
+	atten:SetDecimals(0)
 	if GAMEMODE.Attenuation then
-		atten:SetText(GAMEMODE.Attenuation)
-	else atten:SetText(100) end
+		atten:SetValue(GAMEMODE.Attenuation)
+	else atten:SetValue(100) end
 
 	local playbutton = vgui.Create("DButton", frame)
 	playbutton:SetText("Play")
-	playbutton:SetPos(0, 110)
+	playbutton:SetPos(0, 140)
 	playbutton:SetSize(40, 20)
 	playbutton:CenterHorizontal()
 
@@ -72,7 +79,7 @@ function ENT:ShowUsePanel()
 
 	local stopbutton = vgui.Create("DButton", frame)
 	stopbutton:SetText("Stop")
-	stopbutton:SetPos(470, 110)
+	stopbutton:SetPos(470, 140)
 	stopbutton:SetSize(40, 20)
 
 	stopbutton.DoClick = function(me)
