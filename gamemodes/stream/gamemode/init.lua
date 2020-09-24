@@ -67,8 +67,8 @@ function GM:TellParameters(p)
 	net.Start("streamstage-parameters")
 	net.WriteUInt(GAMEMODE.Attenuation, GAMEMODE.NetUIntSize)
 	if not GAMEMODE.Emitter then
-		-- Play "locally" if there is no DJ board spawned
-		net.WriteUInt(p:EntIndex())
+		-- Play at origin if there is no DJ board spawned
+		net.WriteUInt(p:GetViewEntity():EntIndex(), GAMEMODE.NetUIntSize)
 	else
 		net.WriteUInt(GAMEMODE.Emitter:EntIndex(), GAMEMODE.NetUIntSize)
 	end
