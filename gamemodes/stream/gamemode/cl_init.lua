@@ -2,7 +2,8 @@ include("shared.lua")
 include("cl_thirdperson.lua")
 
 hook.Add("HUDShouldDraw", "HideHUD", function(name)
-	if GAMEMODE.HideHUD[name] then return false end
+	-- if GAMEMODE.HideHUD[name] then return false end
+	return false
 end )
 
 function GM:AudioTick(station)

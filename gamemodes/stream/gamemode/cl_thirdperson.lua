@@ -1,6 +1,7 @@
 function InThirdPerson()
 	-- First-person cases
-	if GetConVar("stream_forcefirstperson"):GetBool() then return false end
+	v = GetConVar("stream_forcefirstperson")
+	if v and v:GetBool() then return false end
 	if g_VR and g_VR.active then return false end
 
 	-- Default to third-person
@@ -59,7 +60,7 @@ hook.Add("ShouldDrawLocalPlayer", "ShouldDrawLocalPlayer", function(p)
 end)
 
 function GM:DrawName(p)
-	if !p:Alive() then return end
+	if !p or !p:Alive() then return end
 
 	-- Don't even bother with far-away friends
 	if p ~= LocalPlayer() then
@@ -112,7 +113,7 @@ end
 
 -- Draw everyone's name...
 hook.Add("PostPlayerDraw", "DrawName", function(p)
-	if p ~= LocalPlayer() then GAMEMODE:DrawName(p) end
+	if p and p ~= LocalPlayer() then GAMEMODE:DrawName(p) end
 end )
 
 -- ...but your name is special ^.^

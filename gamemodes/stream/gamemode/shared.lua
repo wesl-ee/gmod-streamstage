@@ -22,6 +22,7 @@ function GM:Initialize()
 
 		net.Receive("streamstage-start", function() GAMEMODE:BroadcastStart() end)
 		net.Receive("streamstage-stop", function() GAMEMODE:BroadcastStop() end)
+
 	else
 		-- GM-specific client functions
 		net.Receive("streamstage-start", function() GAMEMODE:StartShow() end)
@@ -41,7 +42,7 @@ function GM:Initialize()
 	self.MaxSpeed = 300
 	self.WalkSpeed = 100
 	self.RunSpeed = 175
-	self.JumpPower = 260
+	self.JumpPower = 150
 
 	self.NetUIntSize = 32
 	self.FFTType = FFT_16384
@@ -66,7 +67,7 @@ function GM:Initialize()
 	if SERVER then
 		CreateConVar("stream_url", "http://stream.djr3.org:8000/Club-Howler-Set.ogg", FCVAR_NONE,
 			"Music Stream URL")
-		CreateConVar("stream_autoplay", 1, FCVAR_NONE,
+		CreateConVar("stream_autoplay", 0, FCVAR_NONE,
 			 "Autoplay Music Stream?")
 
 		GAMEMODE.SoundURL = GetConVar("stream_url"):GetString()
@@ -145,6 +146,26 @@ net.Receive("streamstage-parameters", function(len, p)
 		GAMEMODE:StartShow()
 	end
 end )
+
+function GM:ShowTeam(p)
+	if not vrmod then return end
+
+	timer.Simple(0,function() g_VR.CreateSettingsWindow() end)
+end
+
+-- Add some buttons to VRMod quickmenu which help us use the controller from the headset
+if CLIENT and vrmod then
+	-- if !GAMEMODE:CheckYourPriv(p) then return end
+
+	vrmod.AddInGameMenuItem("Play ▶", 3, 2, function()
+		net.Start("streamstage-start")
+		net.SendToServer()
+	end )
+	vrmod.AddInGameMenuItem("Stop ⏹", 3, 3, function()
+		net.Start("streamstage-stop")
+		net.SendToServer()
+	end )
+end
 
 -- Only priviliged users can touch that dial!
 function GM:CheckYourPriv(p)
