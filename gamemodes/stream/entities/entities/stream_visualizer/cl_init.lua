@@ -1,10 +1,8 @@
 include("shared.lua")
 
--- Global
--- local smoothdata = {}
--- for i = 1, 128 do
---	smoothdata[i] = 0
--- end
+local ElectricTeal = Color(10, 255, 255)
+local Orange = Color(255, 140, 0)
+local Black = Color(0, 0, 0)
 
 function ENT:Draw()
 	-- Constant parameters for drawing visualizer
@@ -13,7 +11,6 @@ function ENT:Draw()
 	local BAR_WIDTH = 8
 	local PLOT_TO = 120
 	local PLOT_FROM = 1
-	local SMOOTHING_FACTOR = 2 * FrameTime()
 
 	-- Of course...
 	self:DrawModel()
@@ -36,12 +33,13 @@ function ENT:Draw()
 	-- Data is ready, now we can draw on the model
 	cam.Start3D2D(self:LocalToWorld(screenvect), ang, 0.1)
 
-	-- (Orange) rectangle for visualizer BG
-	surface.SetDrawColor(255, 140, 0)
-	surface.DrawRect(0, 0, VIS_WIDTH, VIS_HEIGHT)
+	-- (Orange) rectangle for visualizer BG, black for FG
+	local bg = Black
+	local fg = ElectricTeal
 
-	-- FG visualizer color is black
-	surface.SetDrawColor(0, 0, 0)
+	surface.SetDrawColor(bg.r, bg.g, bg.b)
+	surface.DrawRect(0, 0, VIS_WIDTH, VIS_HEIGHT)
+	surface.SetDrawColor(fg.r, fg.g, fg.b)
 
 	-- Normalize based on peak value
 	local AMP = VIS_HEIGHT

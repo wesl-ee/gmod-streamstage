@@ -150,7 +150,11 @@ end )
 function GM:ShowTeam(p)
 	if not vrmod then return end
 
-	timer.Simple(0,function() g_VR.CreateSettingsWindow() end)
+	RunConsoleCommand("vrmod")
+end
+
+function GM:ShowSpare1(p)
+	RunConsoleCommand("outfitter")
 end
 
 -- Add some buttons to VRMod quickmenu which help us use the controller from the headset

@@ -24,7 +24,9 @@ function ThirdPerson(ply, pos, angles, fov)
 
 	trace.start = pos
 	trace.endpos = persp
-	trace.filter = LocalPlayer()
+	trace.filter = function(ent)
+		if not (ent == LocalPlayer()) then return true end
+	end
 
 	local trace = util.TraceLine(trace)
 	if trace.HitPos:Distance(pos) - wallavoid < persp:Distance(pos) then
@@ -60,17 +62,19 @@ hook.Add("ShouldDrawLocalPlayer", "ShouldDrawLocalPlayer", function(p)
 end)
 
 function GM:DrawName(p)
-	if !p or !p:Alive() then return end
+	if !p or !p:Alive() or (vrmod and p == LocalPlayer() and vrmod.IsPlayerInVR(LocalPlayer())) then return end
 
 	-- Don't even bother with far-away friends
-	if p ~= LocalPlayer() then
-		local dist = LocalPlayer():GetPos():Distance(p:GetPos())
+	local dist = LocalPlayer():GetPos():Distance(p:GetPos())
 
-		-- Too far! Gotta squint
-		if dist > 1000 then return end
-	end
+	-- Too far! Gotta squint
+	if dist > 1000 then return end
 
 	local dispname = p:GetName()
+	if !dispname then
+		dispname = "[NULL]"
+	end
+
 	local fontname = "CloseCaption_Normal"
 	local color = GAMEMODE:GetTeamColor(p)
 	local above = Vector(0, 0, 81)
@@ -106,17 +110,15 @@ function GM:DrawName(p)
 	ang:RotateAroundAxis(ang:Forward(), 90)
 	ang:RotateAroundAxis(ang:Right(), 90)
 
-	cam.Start3D2D(pos, Angle(0, ang.y, 90), 0.15)
-		draw.DrawText(dispname, fontname, _, _, color, TEXT_ALIGN_CENTER)
-	cam.End3D2D()
+	-- Stubbed out until I can stop it from crashin in VRMod fullbody mode
+	-- if not IsValid(pos) or not IsValid(ang) then return end
+
+	--cam.Start3D2D(pos, Angle(0, ang.y, 90), 0.15)
+	--	draw.DrawText(dispname, fontname, _, _, color, TEXT_ALIGN_CENTER)
+	--cam.End3D2D()
 end
 
 -- Draw everyone's name...
 hook.Add("PostPlayerDraw", "DrawName", function(p)
-	if p and p ~= LocalPlayer() then GAMEMODE:DrawName(p) end
-end )
-
--- ...but your name is special ^.^
-hook.Add("PreDrawViewModel", "DrawMyName", function()
-	GAMEMODE:DrawName(LocalPlayer())
+	if IsValid(p) then GAMEMODE:DrawName(p) end
 end )
