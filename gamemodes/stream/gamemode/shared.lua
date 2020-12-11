@@ -19,6 +19,7 @@ function GM:Initialize()
 		util.AddNetworkString("streamstage-start")
 		util.AddNetworkString("streamstage-stop")
 		util.AddNetworkString("streamstage-parameters")
+		util.AddNetworkString("streamstage-shownoob")
 
 		net.Receive("streamstage-start", function() GAMEMODE:BroadcastStart() end)
 		net.Receive("streamstage-stop", function() GAMEMODE:BroadcastStop() end)
@@ -148,27 +149,9 @@ net.Receive("streamstage-parameters", function(len, p)
 end )
 
 function GM:ShowTeam(p)
-	if not vrmod then return end
-
-	RunConsoleCommand("vrmod")
-end
-
-function GM:ShowSpare1(p)
-	RunConsoleCommand("outfitter")
-end
-
--- Add some buttons to VRMod quickmenu which help us use the controller from the headset
-if CLIENT and vrmod then
-	-- if !GAMEMODE:CheckYourPriv(p) then return end
-
-	vrmod.AddInGameMenuItem("Play ▶", 3, 2, function()
-		net.Start("streamstage-start")
-		net.SendToServer()
-	end )
-	vrmod.AddInGameMenuItem("Stop ⏹", 3, 3, function()
-		net.Start("streamstage-stop")
-		net.SendToServer()
-	end )
+	net.Start("streamstage-shownoob")
+	net.Send(p)
+	return false
 end
 
 -- Only priviliged users can touch that dial!

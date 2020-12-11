@@ -36,7 +36,6 @@ hook.Add("PlayerFullLoad", "FullLoad", function(p)
 		net.Start("streamstage-start")
 		net.Send(p)
 	end
-
 end )
 
 function GM:BroadcastStart()

@@ -286,11 +286,25 @@ function DrawBassBloom(target, intensity)
 	end
 end
 
+local vrmodMenusAdded
 hook.Add("VRMod_Start", "StreamVRModInit", function()
+	-- TODO: GAMEMODE only accessible on server... should globalize the
+	-- CheckYourPriv function
+	if not vrmodMenusAdded and LocalPlayer():Team() > 1 then
+		vrmod.AddInGameMenuItem("Play ▶", 3, 2, function()
+			net.Start("streamstage-start")
+			net.SendToServer()
+		end )
+		vrmod.AddInGameMenuItem("Stop ⏹", 3, 3, function()
+			net.Start("streamstage-stop")
+			net.SendToServer()
+		end )
+		vrmodMenusAdded = true
+	end
+
 	hook.Add("VRMod_PostRender", "BloomBass", function()
 	if GAMEMODE.NowPlaying and GAMEMODE.AttenPercent && GAMEMODE.Volume > 20 then
 		local scale = GAMEMODE.AttenPercent * (GAMEMODE.Volume / 100)
-		-- DrawMotionBlur(0.4, scale*10, 0.015)
 		if GAMEMODE.FFTBassAvg then
 			DrawBassBloom(nil, scale*GAMEMODE.FFTBassAvg*1500)
 			DrawBassBloom(g_VR.rt, scale*GAMEMODE.FFTBassAvg*1500)
@@ -306,9 +320,38 @@ end )
 hook.Add("RenderScreenspaceEffects", "BloomBass", function()
 	if GAMEMODE.NowPlaying and GAMEMODE.AttenPercent && GAMEMODE.Volume > 20 then
 		local scale = GAMEMODE.AttenPercent * (GAMEMODE.Volume / 100)
-		-- DrawMotionBlur(0.4, scale*10, 0.015)
 		if GAMEMODE.FFTBassAvg then
 			DrawBassBloom(nil, scale*GAMEMODE.FFTBassAvg*1500)
 		end
 	end
 end )
+
+local function ShowNoob()
+	RunConsoleCommand("outfitter")
+	if vrmod then
+		RunConsoleCommand("vrmod")
+	end
+end
+
+-- Compatability with my MOTD addon ^-^
+-- https://steamcommunity.com/sharedfiles/filedetails/?id=2063811838
+hook.Add("MOTDClose", "ShowNoobMenuMOTD", function()
+	local bind = input.LookupBinding("gm_showteam")
+	local color = Color(255,255,255,255)
+	hook.Add("HUDPaint", "DrawNoobToolTip", function()
+		draw.DrawText("PROTIP: You can bring these menus forward again using "..bind, "TargetID", ScrW() * 0.5, 100, color, TEXT_ALIGN_CENTER)
+	end)
+	timer.Create("NoobTipFlash", 0.7, 0, function()
+		color = Color(0,0,0,0)
+		timer.Simple(0.3, function()
+			color = Color(255,255,255,255)
+		end )
+	end )
+	timer.Simple(10, function()
+		timer.Remove("NoobTipFlash")
+		hook.Remove("HUDPaint", "DrawNoobToolTip")
+	end )
+	ShowNoob()
+end )
+
+net.Receive("streamstage-shownoob", ShowNoob)
