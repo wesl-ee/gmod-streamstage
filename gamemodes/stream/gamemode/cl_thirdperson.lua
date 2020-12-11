@@ -62,20 +62,27 @@ hook.Add("ShouldDrawLocalPlayer", "ShouldDrawLocalPlayer", function(p)
 end)
 
 function GM:DrawName(p)
-	if !p or !p:Alive() or (vrmod and p == LocalPlayer() and vrmod.IsPlayerInVR(LocalPlayer())) then return end
+	-- if !p or !p:Alive() or (vrmod and p == LocalPlayer() and vrmod.IsPlayerInVR(LocalPlayer())) then return end
+	if !p or !p:Alive() then return end
 
 	-- Don't even bother with far-away friends
-	local dist = LocalPlayer():GetPos():Distance(p:GetPos())
+	local dist = LocalPlayer():GetPos():DistToSqr(p:GetPos())
 
-	-- Too far! Gotta squint
-	if dist > 1000 then return end
+	-- Too far! Gotta squint (700*700)
+	if dist > 490000 then return end
 
 	local dispname = p:GetName()
 	if !dispname then
 		dispname = "[NULL]"
 	end
 
-	local fontname = "CloseCaption_Normal"
+	local fontname = "Trebuchet24"
+	local scale
+	if p == LocalPlayer() then
+		scale = 0.15
+	else
+		scale = 0.2
+	end
 	local color = GAMEMODE:GetTeamColor(p)
 	local above = Vector(0, 0, 81)
 	local ang = LocalPlayer():EyeAngles()
@@ -84,7 +91,6 @@ function GM:DrawName(p)
 	-- [xXx] cL4NT4Gsz 4 tHA R341 G4MM3RZ
 	if p:Team() == GAMEMODE.TeamCreator then
 		dispname = "[CREATOR] "..dispname
-		fontname = "CloseCaption_Bold"
 
 		if GAMEMODE.NameThing then
 			if p.Seq == nil then p.Seq = 3 end
@@ -107,15 +113,19 @@ function GM:DrawName(p)
 		dispname = "[Admin] "..dispname
 	end
 
+	-- Bootleg centering cause TEXT_ALIGN_CENTER is broken
+	surface.SetFont(fontname)
+	local tX, _ = surface.GetTextSize(dispname)
+	local tHalfWidth = scale * tX / 2
+	pos = pos - tHalfWidth * ang:Right()
+
+	-- Orient towards viewpoint
 	ang:RotateAroundAxis(ang:Forward(), 90)
 	ang:RotateAroundAxis(ang:Right(), 90)
 
-	-- Stubbed out until I can stop it from crashin in VRMod fullbody mode
-	-- if not IsValid(pos) or not IsValid(ang) then return end
-
-	--cam.Start3D2D(pos, Angle(0, ang.y, 90), 0.15)
-	--	draw.DrawText(dispname, fontname, _, _, color, TEXT_ALIGN_CENTER)
-	--cam.End3D2D()
+	cam.Start3D2D(pos, Angle(0, ang.y, 90), scale)
+		draw.DrawText(dispname, fontname, 0, 0, color, TEXT_ALIGN_LEFT)
+	cam.End3D2D()
 end
 
 -- Draw everyone's name...
